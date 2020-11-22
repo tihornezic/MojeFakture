@@ -1,0 +1,101 @@
+﻿@model IEnumerable<MojeFakture.Models.Faktura>
+
+@{
+    ViewBag.Title = "Random";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2>Fakture</h2>
+<br />
+<a href="../Fakture/New" class="btn btn-primary">Kreiraj fakturu &raquo;</a>
+<br />
+<br />
+
+<table id="fakture" class="table table-bordered table-hover">
+    <thead>
+        <tr>
+            <th>Id</th>
+            <th>Opis </th>
+            <th>Datum Stvaranja</th>
+            <th>Datum Dospijeća</th>
+            <th>Uredi</th>
+            <th>Izbriši</th>
+        </tr>
+    </thead>
+
+    <tbody>
+        @*@foreach (var faktura in Model)
+            {
+                <tr>
+                    <td>@faktura.Id</td>
+                    <td>@Html.ActionLink(faktura.Opis, "Detalji", "Fakture", new { id = faktura.Id }, null)</td>
+                    <td>@faktura.DatumStvaranja</td>
+                    <td>@faktura.DatumDospijeca</td>
+                    <td>@Html.ActionLink("Uredi", "Edit", "Fakture", new { id = faktura.Id }, null)</td>
+                    <td>
+                        <button data-faktura-id="@faktura.Id" class="btn-link js-delete">Izbriši</button>
+                    </td>
+                </tr>
+            }*@
+    </tbody>
+</table>
+@section scripts
+{
+    <script>
+        $(document).ready(function () {
+           var table = $("#fakture").DataTable({
+                ajax: {
+                    url: "/api/fakture",
+                    dataSrc: ""
+                },
+                columns: [
+                    {
+                        data: "id"
+                    },
+                    {
+                        data: "opis",
+                        render: function (data, type, faktura) {
+                            return "<a href='/fakture/detalji/" + faktura.id + "'>" + faktura.opis + "</a>";
+                        }
+                    },
+                    {
+                        data: "datumStvaranja"
+                    },
+                    {
+                        data: "datumDospijeca"
+                    },
+                    {
+                        data: "id",
+                        render: function (data, type, faktura) {
+                            return "<a href='/fakture/edit/" + faktura.id + "'>" + "Uredi" + "</a>";
+                        }
+                    },
+                    {
+                        data: "id",
+                        render: function (data) {
+                            return "<button class='btn-link js-delete' data-faktura-id=" + data + ">Izbriši</button>";
+                        }
+                    }
+                ]
+            });
+
+            $("#fakture").on("click",
+                ".js-delete",
+                function () {
+                    var button = $(this);
+                    bootbox.confirm("Želite li izbrisati odabranu fakturu?",
+                        function (result) {
+                            if (result) {
+                                $.ajax({
+                                    url: "/api/fakture/" + button.attr("data-faktura-id"),
+                                    method: "DELETE",
+                                    success: function () {
+                                        table.row(button.parents("tr")).remove().draw();
+                                    }
+                                });
+                            }
+                        });
+                })
+        });
+    </script>
+}

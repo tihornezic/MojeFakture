@@ -1,0 +1,64 @@
+﻿@model MojeFakture.ViewModels.FakturaFormViewModel
+@{
+    ViewBag.Title = "New";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<br />
+<h2>@Model.Title</h2>
+<br />
+<br />
+
+@using (Html.BeginForm("Save", "Fakture"))
+{
+    <div class="form-group">
+        <label>Opis</label>
+        @Html.TextBoxFor(f => f.Faktura.Opis, new { @class = "form-control" })
+        @Html.ValidationMessageFor(m => m.Faktura.Opis)
+    </div>
+
+    <div class="form-group">
+        <label>Datum Stvaranja</label>
+        @Html.TextBoxFor(f => f.Faktura.DatumStvaranja, new { @class = "form-control" })
+        @Html.ValidationMessageFor(m => m.Faktura.DatumStvaranja)
+    </div>
+
+    <div class="form-group">
+        <label>Datum Dospijeća</label>
+        @Html.TextBoxFor(f => f.Faktura.DatumDospijeca, new { @class = "form-control" })
+        @Html.ValidationMessageFor(m => m.Faktura.DatumDospijeca)
+    </div>
+
+    <div class="form-group">
+        <label>Vrsta obračuna PDV-a</label>
+        @Html.DropDownListFor(p => p.Faktura.PorezId, new SelectList(Model.Porezs, "Id", "VrstaPoreza"), "Odaberi vrstu PDV-a", new { @class = "form-control" })
+    </div>
+
+    <div class="form-group">
+        <label>Stavke</label>
+        @Html.DropDownListFor(s => s.Faktura.StavkaId, new SelectList(Model.Stavkas, "Id", "Naziv"), "Odaberi stavke", new { @class = "form-control" })
+    </div>
+
+    <div class="form-group">
+        <label>Količina</label>
+        @Html.TextBoxFor(f => f.Faktura.Kolicina, new { @class = "form-control" })
+        @Html.ValidationMessageFor(m => m.Faktura.Kolicina)
+    </div>
+
+    <div class="form-group">
+        <label>Naziv primatelja računa</label>
+        @Html.TextBoxFor(f => f.Faktura.NazivPrimatelja, new { @class = "form-control" })
+        @Html.ValidationMessageFor(m => m.Faktura.NazivPrimatelja)
+    </div>
+
+    @Html.HiddenFor(m => m.Faktura.Id)
+    @Html.AntiForgeryToken()
+    <button type="submit" class="btn btn-primary">
+        Spremi
+    </button>
+}
+
+@section scripts
+{
+    @Scripts.Render("~/bundles/jqueryval")
+}

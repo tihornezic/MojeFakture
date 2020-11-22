@@ -1,0 +1,94 @@
+﻿@{
+    ViewBag.Title = "Index";
+}
+
+<h2>Stavke</h2>
+<br />
+<a href="../Stavke/New" class="btn btn-primary">Kreiraj stavku &raquo;</a>
+<br />
+<br />
+
+<table id="stavke" class="table table-bordered table-hover">
+    <thead>
+        <tr>
+            <th>Id</th>
+            <th>Stavka</th>
+            <th>Jedinična cijena</th>
+            <th>Uredi</th>
+            <th>Izbriši</th>
+        </tr>
+    </thead>
+
+    <tbody>
+        @*@foreach (var stavka in Model)
+            {
+                <tr>
+                    <td>@stavka.Id</td>
+                    <td>@stavka.Naziv</td>
+                    <td>@stavka.JedinicnaCijena kn</td>
+                    <td>@Html.ActionLink("Uredi", "Edit", "Stavke", new { id = stavka.Id }, null)</td>
+                    <td>
+                        <button data-stavka-id="@stavka.Id" class="btn-link js-delete">Izbriši</button>
+                    </td>
+                </tr>
+            }*@
+    </tbody>
+</table>
+@section scripts
+{
+    <script>
+        $(document).ready(function() {
+            var table = $("#stavke").DataTable({
+                ajax: {
+                    url: "/api/stavke",
+                    dataSrc: ""
+                },
+                columns: [
+                    {
+                        data: "id"
+                    },
+                    {
+                        data: "naziv"
+                    },
+                    {
+                        data: "jedinicnaCijena",
+                        render: function(text, type, stavka) {
+                            return stavka.jedinicnaCijena + " kn"
+                        }
+                    },
+                    {
+                        data: "id",
+                        render: function(data, type, stavka) {
+                            return "<a href='/stavke/edit/" + stavka.id + "'>" + "Uredi" + "</a>";
+                        }
+                    },
+                    {
+                        data: "id",
+                        render: function(data) {
+                            return "<button class='btn-link js-delete' data-stavka-id=" + data + ">Izbriši</button>";
+                        }
+                    }
+                ]
+            });
+
+            $("#stavke").on("click",
+                ".js-delete",
+                function() {
+                    var button = $(this);
+                    bootbox.confirm("Želite li izbrisati odabranu stavku?",
+                        function(result) {
+                            if (result) {
+                                $.ajax({
+                                    url: "/api/stavke/" + button.attr("data-stavka-id"),
+                                    method: "DELETE",
+                                    success: function () {
+                                        table.row(button.parents("tr")).remove().draw();
+                                    }
+                                });
+                            }
+                        });
+                })
+        });
+    </script>
+}
+

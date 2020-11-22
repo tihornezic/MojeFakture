@@ -1,0 +1,55 @@
+﻿@using Microsoft.AspNet.Identity
+@model MojeFakture.Models.Faktura
+@{
+    ViewBag.Title = "Detalji";
+}
+
+<h2>Faktura @Url.Action().Substring(17)</h2>
+<br />
+<br />
+
+<table class="table table-bordered table-hover">
+    <thead>
+        <tr>
+            <th>Id Fakture</th>
+            <th>Opis Fakture</th>
+            <th>Datum Stvaranja</th>
+            <th>Datum Dospijeća</th>
+            <th>Id stavke</th>
+            <th>Naziv stavke</th>
+            <th>Jedinična cijena stavke</th>
+            <th>Količina</th>
+            <th>Count</th>
+            <th>Ukupna cijena</th>
+            <th>Iznos poreza (u %)</th>
+            <th>Ukupna cijena s porezom</th>
+            <th>Primatelj računa</th>
+            @*<th>Stvaratelj Računa</th>*@
+        </tr>
+    </thead>
+
+    <tbody>
+        <tr>
+            <td>@Model.Id</td>
+            <td>@Model.Opis</td>
+            <td>@Model.DatumStvaranja</td>
+            <td>@Model.DatumDospijeca</td>
+            <td>@Model.Stavka.Id</td>
+            <td>@Model.Stavka.Naziv</td>
+            <td>@Model.Stavka.JedinicnaCijena kn</td>
+
+
+
+            <td>@Model.Kolicina</td>
+            <td>@Model.Porez.VrstaPoreza</td>
+
+            <td>@(Model.Kolicina * Model.Stavka.JedinicnaCijena) kn</td>
+            <td>@Model.Porez.VrstaPoreza</td>
+
+            <td>@((Model.Kolicina * Model.Stavka.JedinicnaCijena * Model.Porez.VrijednostPoreza) + (Model.Kolicina * Model.Stavka.JedinicnaCijena)) kn</td>
+            @*<td>@HttpContext.Current.User.Identity.Name</td>*@
+            <td>@Model.NazivPrimatelja</td>
+
+    </tbody>
+
+</table>
